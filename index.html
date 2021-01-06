@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src='https://www.googletagmanager.com/gtag/js?id=UA-134639397-1'></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-134639397-1');
+</script>
+
+<!-- default metas -->
+<meta charset='utf-8'>
+<meta name='description' content='Rapid energy storage testing.'>
+<meta name='robots' content='index'>
+<meta name='author' content='Voltax'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+
+<title>Voltax</title>
+
+<!-- CSS -->
+<link href='css/main_v=0.3.20.css' rel='stylesheet'>
+<link href='css/v2_v=0.3.20.css' rel='stylesheet'>
+
+</head>
+
+<body style='background-color: #f9f9f9;'>
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src='https://www.gstatic.com/firebasejs/6.2.0/firebase-app.js'></script>
+<script src='https://www.gstatic.com/firebasejs/3.1.0/firebase-database.js'></script>
+
+<!-- <script>
+  const firebaseConfig = {
+    apiKey: 'AIzaSyDxTGL2ZwZj31SDwmWtmq0DnJuzHh7T1EE',
+    authDomain: 'page-d6a4f.firebaseapp.com',
+    databaseURL: 'https://page-d6a4f.firebaseio.com',
+    projectId: 'page-d6a4f',
+    storageBucket: '',
+    messagingSenderId: '850367207775',
+    appId: '1:850367207775:web:963e6481a87219b5'
+  };
+  firebase.initializeApp(firebaseConfig);
+</script> -->
+
+<div class="container">
+
+  <div class="row">
+    <div class='menu'>
+      <img 'id='logo' class="logo" class="center"' >
+      <ul class="menu-right">
+        <center>
+          <img src="media/logo.png" alt="centered image" />
+        </center>
+        <!-- <li><a href="#">Enterprise</a></li> -->
+      </ul>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class='header-section'>
+      <h1>The Easiest way to </h1>
+      <br>
+      <p>Setup Syncs<span class='non-breaking'> With your Team </span></p>
+      <br>
+      <form id='signup-form' role='form' onsubmit='return signup(this)'>
+        <input type='email' name='email' placeholder='Enter your email address' autofocus='autofocus'>
+        <button id='signup-button' class='btn-call-to-action' type='submit'>Request Access</button>
+      </form>
+      <p id='signup-success' style='letter-spacing: .008em; font-family: "SF Display"; font-size: 1em; line-height: 1.5em; font-weight: 500; margin: 0 auto;'>jdsnjkd</p>
+    </div>
+  </div>
+
+
+  <div class='row footer'></div>
+</div>
+</body>
+</html>
+
+<script>
+var signupForm = document.getElementById('signup-form')
+var signupSuccess = document.getElementById('signup-success')
+var signupBtn = document.getElementById('signup-button')
+
+signupSuccess.style.display = 'none'
+
+var onSignupComplete = function(error) {
+  signupBtn.disabled = false;
+  if (error) {
+    signupSuccess.innerHTML = 'Something went wrong. Could not signup.'
+  } else {
+    signupSuccess.innerHTML = 'Thanks for signing up!'
+    signupForm.style.display = 'none'
+  }
+  signupSuccess.style.display = 'inherit'
+}
+
+function signup(formObj) {
+  gtag('event', 'clicked_sign_up')
+  if (formObj.email.value == '') {
+    onSignupComplete('error: empty response')
+    return false
+  }
+  // Store emails to firebase
+  firebase.database().ref('requestAccess').push({
+    email: formObj.email.value,
+  }, onSignupComplete)
+  signupBtn.disabled = true
+  return false
+}
+
+function mediaQuery(x) {
+  const logo = document.getElementById("logo")
+  if (x.matches) {
+    logo.src = "media/metacode-logo@2x.png?v=0.3.20";
+  } else {
+    logo.src = "media/metacode-logotype@2x.png?v=0.3.20";
+  }
+}
+
+var x = window.matchMedia("(max-width: 560px)")
+mediaQuery(x) // Call listener function at run time
+x.addListener(mediaQuery) // Attach listener function on state changes
+</script>

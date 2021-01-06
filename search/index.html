@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src='https://www.googletagmanager.com/gtag/js?id=UA-134639397-1'></script>
+<script>
+  window.dataLayer = window.dataLayer || []
+  function gtag(){dataLayer.push(arguments)}
+  gtag('js', new Date())
+
+  gtag('config', 'UA-134639397-1')
+</script>
+
+<!-- default metas -->
+<meta charset='utf-8'>
+<meta name='description' content='Better code search.'>
+<meta name='robots' content='index'>
+<meta name='author' content='Metacode'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+
+<!-- open graph -->
+<meta property='og:title' content='Metacode'>
+<meta property='og:description' content='Better code search.'>
+<meta property='og:url' content='https://desktop.metacode.app/'>
+<meta property='og:image' content='https://metacode.app/media/Icon512.png'>
+
+<!-- twitter -->
+<meta name='twitter:card' content='summary'>
+<meta name='twitter:site' content='@metacodeapp'>
+<meta name='twitter:creator' content='@metacodeapp'>
+<meta name='twitter:title' content='Metacode'>
+<meta name='twitter:description' content='Better code search.'>
+<meta name='twitter:image' content='https://metacode.app/media/Icon512.png'>
+
+<title>Metacode</title>
+
+<!-- CSS -->
+<link href='css/search_v=0.2.23.css' rel='stylesheet'>
+<link href='css/code_v=0.2.23.css' rel='stylesheet'>
+
+<!-- code higlighter -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/default.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
+</head>
+
+<body>
+<div id='popup-background' class='popup-background' style="display: none;"><div id='popup-container' class='file-popup'><div class='popup-padder'><div id='popup-scroller' class='popup-scroller'><pre><code readonly id='file-popup'></code></pre></div></div></div></div>
+<div class='container'>
+    <div style='background-color: #202124;'>
+        <div class='row search-container'>
+            <div class='col-2'>
+                <a href='../index.html'><img src='media/metacode-logomark@2x.png' style='width: 36px;'></a>
+            </div><div class='col-8'>
+                <div id='search-form' class='search-form' role='form'>
+                    <div class='search-input-container'>
+                        <input id='search-input' type='text' name='query' placeholder='Search' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false' autofocus='autofocus'>
+                        <div class='dropdown'>
+                            <button id='repo-dropdown-button' class='dropbtn'>(all repos)<span class='arrow-container'><i class='arrow down'></i><span></button>
+                            <div class='dropdown-content'>
+                                <div id='repo-search-form' class='search-form-minor light-mode' role='form'>
+                                    <div class='search-input-container'>
+                                        <input id='repo-search-input' type='text' name='query' placeholder='filter repos' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false'>
+                                    </div>
+                                </div>
+                                <div id='repo-dropdown-content' class='dropdown-list'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='tags'>
+                    <div class='dropdown'>
+                        <button id='search-type-dropdown-button' class='dropbtn tag'>--<span class='arrow-container'><i class='arrow down' style='position: relative; top: -1px;'></i></span></button>
+                        <div id='search-type-dropdown-content' class='dropdown-content'>
+                            <a id='optionSemantic' title='natural language search'>Semantic</a>
+                            <a id='optionRegex'>Regular Expression</a>
+                            <!-- <a id='optionFuzzy' title='whitespace is replaced with regex: .*?'>fuzzy</a> -->
+                            <a id='optionLiteral' title='plain search'>Literal</a>
+                        </div>
+                    </div>
+                    <div id='tagCaseSensitive' class='tag clickable'><input id='checkboxCaseSensitive' type='checkbox' onchange='toggleCheckbox(this)' name='checkboxCaseSensitive' value='caseSensitive'><label for='checkboxCaseSensitive'>Case Sensitive</label></div>
+                    <div id='tagContext' class='tag clickable'><input id='checkboxContext' type='checkbox' onchange='toggleCheckbox(this)' name='checkboxContext' value='context'><label for='checkboxContext'>Show Context</label></div>
+                </div>
+            </div><div class='col-2'></div>
+        </div>
+    </div>
+
+    <div class='row results'>
+        <div class='col-3'>
+            <div class='options'>
+                <div id='language-options'>
+                    <h4>Languages</h4>
+                    <div id='lang-search-form' class='search-form-minor light-mode' role='form'>
+                        <div class='search-input-container'>
+                            <input id='lang-search-input' type='text' name='query' placeholder='js, html, py ...' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false'>
+                        </div>
+                    </div>
+                    <p>* note that <strong>semantic</strong> search works for js, ts, java, c, c++, swift (and more soon)</p>
+                </div>
+            </div>
+        </div><div class='col-9'>
+            <div id='search-results-paths' class='search-results-container'>
+            </div>
+
+            <div id='search-results-code' class='search-results-container'>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+<script src='js/search_v=0.2.23.js'></script>
+<script src='js/searchResults_v=0.2.23.js'></script>
+<script>
+// variables
+const searchForm = document.getElementById('search-form')
+const searchInput = document.getElementById('search-input')
+
+const langSearchForm = document.getElementById('lang-search-form')
+const langSearchInput = document.getElementById('lang-search-input')
+
+const repoDropdownContent = document.getElementById('repo-dropdown-content')
+const repoDropdownButton = document.getElementById('repo-dropdown-button')
+const repoSearchForm = document.getElementById('repo-search-form')
+const repoSearchInput = document.getElementById('repo-search-input')
+
+const searchTypeDropdownContent = document.getElementById('search-type-dropdown-content')
+const searchTypeDropdownButton = document.getElementById('search-type-dropdown-button')
+
+const dropdownRegex = document.getElementById('optionRegex')
+const dropdownSemantic = document.getElementById('optionSemantic')
+// const dropdownFuzzy = document.getElementById('optionFuzzy')
+const dropdownLiteral = document.getElementById('optionLiteral')
+
+const pathSearchResultsContainer = document.getElementById('search-results-paths')
+const codeSearchResultsContainer = document.getElementById('search-results-code')
+
+const tagContext = document.getElementById('tagContext')
+const checkboxContext = document.getElementById('checkboxContext')
+const tagCaseSensitive = document.getElementById('tagCaseSensitive')
+const checkboxCaseSensitive = document.getElementById('checkboxCaseSensitive')
+
+const popupBackground = document.getElementById('popup-background')
+const popupContainer = document.getElementById('popup-container')
+const filePopup = document.getElementById('file-popup')
+const fileScroller = document.getElementById('popup-scroller')
+
+var repos = {}
+var selectedRepoID = undefined
+
+function isCaseSensitive() { return checkboxCaseSensitive.checked && checkboxCaseSensitive.disabled === false }
+function showCodeContext() { return checkboxContext.checked && checkboxContext.disabled === false }
+function isSemantic() { return dropdownSemantic.classList.contains('selected') }
+// function isFuzzy() { return dropdownFuzzy.classList.contains('selected') }
+function isRegex() { return dropdownRegex.classList.contains('selected') }
+
+document.onkeyup = function(e) {
+    if (e.keyCode == '27') {
+        popupBackground.style.display = 'none'
+    }
+ }
+
+const searchForms = [searchForm, langSearchForm]
+searchForms.forEach(form => {
+    form.onsubmit = async function() { return submitSearchForm() }
+    form.onkeydown = async function() { submitSearchForm() }
+    form.onkeyup = async function() { submitSearchForm() }
+    form.addEventListener('submit', function(e) {
+        e.preventDefault()
+    }, false)
+})
+
+repoSearchForm.onsubmit = async function() { return filterRepoDropdown() }
+repoSearchForm.onkeydown = async function() { filterRepoDropdown() }
+repoSearchForm.onkeyup = async function() { filterRepoDropdown() }
+repoSearchForm.addEventListener('submit', function(e) {
+    e.preventDefault()
+}, false)
+
+// repoDropdownButton.onclick = function () {
+//     fetchRepositories()
+// }
+
+// const allTags = [tagContext, tagCaseSensitive]
+// allTags.forEach(tag => {
+//     tag.onclick = function() {
+//         if (this.classList.contains('disabled')) {return}
+//         // console.log(this.classList);
+//         // toggleElementSelection(tag)
+//         if (this.children[0].checked) {
+//             submitSearchForm()
+//         }
+//     }
+// })
+
+function toggleCheckbox(element) {
+    if (!element.disabled) {
+        submitSearchForm()
+    }
+}
+
+const allOptions = [dropdownSemantic, dropdownRegex, dropdownLiteral]
+allOptions.forEach(option => {
+    option.onclick = function() {
+        selectDropdownOption(this)
+        submitSearchForm()
+    }
+})
+
+popupBackground.onclick = () => {
+    popupBackground.style.display = 'none'
+}
+
+popupContainer.onclick = () => {
+    event.stopPropagation();
+}
+
+// execution
+fetchRepositories()
+selectDropdownOption(dropdownSemantic)
+
+// functions
+function submitSearchForm() {
+    let searchType = 'default'
+    if (isSemantic()) {
+        searchType = 'semantic'
+    // } else if (isFuzzy()) {
+    //     searchType = 'fuzzy'
+    } else if (isRegex()) {
+        searchType = 'regex'
+    }
+    let langQuery = langSearchInput.value.trim()
+    if (langQuery.length === 0) {
+        langQuery = undefined
+    }
+    search(searchInput.value, searchType, isCaseSensitive(), showCodeContext(), langQuery)
+}
+
+function toggleElementSelection(element) {
+    if (element.classList.contains('selected')) {
+        element.classList.remove('selected')
+    } else {
+        element.classList.add('selected')
+    }
+}
+
+function selectDropdownOption(element) {
+    // universal logic
+    for (const child of searchTypeDropdownContent.children) {
+        child.classList.remove('selected')
+    }
+    searchTypeDropdownButton.innerHTML = element.innerHTML + `<span class='arrow-container'><i class='arrow down'></i></span>`
+    toggleElementSelection(element)
+
+    // ad hoc logic, for selection special behaviour
+    if (isSemantic()) {
+        checkboxCaseSensitive.disabled = true
+        tagCaseSensitive.classList.add('disabled')
+    } else {
+        checkboxCaseSensitive.disabled = false
+        tagCaseSensitive.classList.remove('disabled')
+    }
+}
+
+function showPopupLoader() {
+    popupBackground.style.display = 'block'
+    // TODO: display loading animation gif or something
+}
+
+function showFilePopup(file, lineNumber) {
+    if (!file) {return}
+    let content = escapeHtml(file.content)
+    if (lineNumber) {
+        let lines = content.split('\n')
+        lines[lineNumber - 1] = `<mark>${lines[lineNumber - 1]}</mark>`
+        content = lines.join('\n')
+    }
+    for (item of filePopup.classList) {
+        if (item.includes('lang-')) {
+            filePopup.classList.remove(item)
+        }
+    }
+    const fileExtension = file.relativePath.split('.').pop()
+    filePopup.classList.add(`lang-${fileExtension}`)
+    filePopup.innerHTML = `${content}`
+
+    popupContainer.querySelectorAll('pre code').forEach((block) => {
+        hljs.highlightBlock(block);
+    });
+
+    const style = window.getComputedStyle(filePopup, null).getPropertyValue('font-size');
+    let fontSize = parseFloat(style);
+    const centeringOffset = (fileScroller.offsetHeight / 2)
+    fileScroller.scrollTo(0, (lineNumber - 1) * (fontSize + 2) - centeringOffset);
+}
+</script>

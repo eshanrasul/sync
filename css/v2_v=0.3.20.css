@@ -1,0 +1,169 @@
+.menu {
+  display: flex;
+  justify-content: space-between;
+}
+
+input[type=email], .btn-call-to-action {
+  font-family: "SF Text";
+  font-weight: 500;
+  font-size: 1em;
+  text-decoration: none;
+  border: none;
+}
+
+input[type=email] {
+  /* removes weird shadow on iOS etc.*/
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  padding: 15px 20px;
+  outline: none;
+}
+
+.btn-call-to-action {
+  border-radius: 10px;
+  padding: 16px 32px;
+  background-color: #2d7ff9;
+  color: white;
+  cursor: pointer;
+}
+
+.btn-call-to-action {
+  min-width: 200px;
+}
+
+.header-section {
+  min-height: 160px;
+}
+
+.header-section p {
+  display: inline-block;
+  color: #888;
+  letter-spacing: .008em;
+  font-family: 'SF Display';
+  font-weight: 400;
+}
+
+.header-section h1 {
+  letter-spacing: .008em;
+  font-family: 'SF Display';
+  font-weight: 600;
+  color: #000;
+  display: inline-block;
+  margin: 0;
+}
+
+.metacode-logo {
+  height: 39px;
+}
+
+.non-breaking { white-space:nowrap; }
+
+/* Vertical centering of block-level div */
+.parent {
+  position: relative;
+}
+.child {
+  position: absolute;
+  top: 50%;
+  height: 300px;
+  margin-top: -150px; /* account for padding and border if not using box-sizing: border-box; */
+}
+
+@media screen and (min-width: 0px) {
+  .container {
+      padding: 0 24px;
+  }
+  .menu {
+      padding: 32px 0;
+  }
+
+  .header-section {
+    padding: 0 8px 32px 8px;
+  }
+
+  .header-section h1 {
+    font-size: 2em;
+    line-height: 1.4em;
+    max-width: 300px;
+  }
+
+  .header-section p {
+    font-size: 1.55em;
+    line-height: 1.5em;
+    font-weight: 400;
+    max-width: 320px;
+    margin-bottom: 24px;
+  }
+
+  input[type=email] {
+    margin-bottom: 16px;
+    border-radius: 12px;
+    border: 2px solid #ddd;
+    display: block;
+    background-color: #f1f1f1;
+    width: 100%;
+    max-width: 240px;
+  }
+
+  .btn-call-to-action {
+    margin: 0;
+    display: inline-block;
+  }
+}
+
+@media screen and (min-width: 560px) {
+  .container {
+      padding: 0 32px;
+  }
+  
+  .menu {
+      padding: 40px 0;
+  }
+
+  input[type=email] {
+    margin-bottom: 0;
+    border-radius: 0;
+    border: none;
+    border-bottom: 2px solid #333;
+    display: inline-block;
+    background-color: rgba(0, 0, 0, 0);
+    width: 200px;
+  }
+
+  .header-section {
+    padding: 48px 0 96px 0;
+    text-align: center;
+  }
+
+  .header-section h1 {
+    font-size: 40px;
+    line-height: 1.5em;
+    max-width: 400px;
+  }
+
+  .header-section p {
+    font-size: 24px;
+    line-height: 1.5em;
+    max-width: 440px;
+    font-weight: 500;
+  }
+
+  .btn-call-to-action {
+    margin: 0 0 0 8px;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .container {
+      padding: 0 64px;
+  }
+  .header-section h1 {
+    max-width: inherit;
+  }
+  .col-12 {
+    max-width: 1024px;
+    width: 80%;
+  }
+}
